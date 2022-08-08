@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>Blockland - a multi-player game</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	<meta name="description"
+		content="Blockland is a multi-player game. Using the Three.js library. author:Nik Lever ©2018 category:application-javascript" />
+	<meta property="og:url" content="http://niksgames.com/blockland" />
+	<meta property="og:type" content="product" />
+	<meta property="og:title" content="Blockland - a multi-player game" />
+	<meta property="og:description"
+		content="Blockland is a multi-player game. Using the Three.js library. author:Nik Lever ©2018 category:application-javascript" />
+	<meta property="og:image" content="http://niksgames.com/blockland/assets/blockland-og.jpg" />
+	<meta property="og:image:type" content="image/jpeg" />
+	<meta property="og:image:width" content="1265" />
+	<meta property="og:image:height" content="817" />
+	<meta property="og:image:alt" content="Blockland - a multi-player game" />
+	<meta property='og:video' content='https://www.youtube.com/v/1r9V_JEEMlA' />
+	<link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans|Kavivanar" rel="stylesheet">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+	<style>
+		*,
+		::after,
+		::before {
+			box-sizing: revert;
+		}
+
+		body {
+			font-family: Monospace;
+			/* background-color: #000; */
+			color: #fff;
+			margin: 0px;
+			overflow: hidden;
+			font-size: 24px;
+		}
+
+		#message {
+			position: absolute;
+			left: 50%;
+			top: 50%;
+			transform: translateX(-50%) translateY(-50%);
+			font-family: 'Kavivanar', san-serif;
+			font-size: 40px;
+			width: 80%;
+			max-width: 280px;
+			padding: 15px 15px 50px 15px;
+			text-align: center;
+			display: none;
+			align-content: center;
+			justify-content: center;
+			background-color: aliceblue;
+			border: medium solid #3D455C;
+			border-radius: 20px;
+			color: #3D455C;
+			z-index: 99;
+		}
+
+		#message_ok {
+			position: absolute;
+			bottom: 10px;
+			padding: 10px 20px 10px 20px;
+			font-family: sans-serif;
+			font-size: 20px;
+			background-color: #3D455C;
+			color: #fff;
+			border-radius: 8px;
+			border: medium solid #696882;
+		}
+
+		#chat {
+			position: absolute;
+			width: 100%;
+			height: 40px;
+			bottom: -40px;
+			transition: all 0.5s;
+		}
+
+		#animation-btn {
+			position: absolute;
+			right: 15px;
+			bottom: 15px;
+			width: 60px;
+			height: 60px;
+			border: none;
+			border-radius: 50%;
+			background: #3B53A2;
+			font-size: 25px;
+			color: #fff;
+		}
+
+		#profile-fullname {
+			font-size: 24px;
+			margin-left: 0.5%;
+		}
+
+		#profile-btn {
+
+			width: 60px;
+			height: 60px;
+			border: none;
+			border-radius: 50%;
+			background: white;
+			font-size: 25px;
+			color: #fff;
+
+
+		}
+
+		#profile {
+			position: absolute;
+			left: 20px;
+			top: 30px;
+			width: 100%;
+			height: 10;
+
+		}
+
+		#animation-case {
+			position: absolute;
+			right: 20px;
+			bottom: 80px;
+			width: auto;
+			opacity: 0;
+			padding: 8px;
+			border-radius: 8px;
+			background: #3B53A2;
+			transition: opacity 0.5s;
+		}
+
+		#controler-player {
+			position: absolute;
+			right: 1100px;
+			bottom: -14px;
+
+
+		}
+
+		#animation-case ul {
+			list-style: none;
+			padding: 0;
+			margin: 0;
+		}
+
+		#animation-case li {
+			float: left;
+		}
+
+		#animation-case li a {
+			padding: 0 3px 0 3px;
+		}
+
+		#animation-case img {
+			width: 100px;
+			height: 75px;
+		}
+
+		#profile-user {
+			position: absolute;
+			left: 20px;
+			top: 150px;
+			width: 25%;
+			/* height: 70%; */
+			opacity: 0;
+			padding: 8px;
+			border-radius: 8px;
+			background: white;
+			transition: opacity 0.5s;
+		}
+
+		form {
+			background: rgb(255, 255, 255);
+			padding: 3px;
+			width: 100%;
+		}
+
+		form input {
+			border-width: 1px;
+			padding: 10px;
+			width: 88%;
+			margin-right: .5%;
+		}
+
+		form button {
+			width: 8%;
+			background: #3B53A2;
+			border: none;
+			padding: 10px;
+		}
+	</style>
+</head>
+
+<body>
+	<!-- <div class="profile" id="profile" hidden>
+		<button id="profile-btn"><img id="user-profile-img" class="shadow rounded-circle"
+				style="width:50px; height:50px;" src="https://3dtv-tech.com/img/3dtvtech-without-text.png"></i></button>
+		<label for="" id="profile-fullname"
+			style="text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;">วีรากร ชอบธรรม</label>
+	</div> -->
+
+	<div id="message">
+		<p id="message_text"></p>
+		<button id="message_ok">OK</button>
+	</div>
+	<div id="controler-player">
+		<!-- <p id="controler-player-text">Control Player</p> -->
+
+	</div>
+	<div id="chat">
+		<form id="msg-form" action="">
+			<input id="m" autocomplete="off" style="border-radius: 50px; border-width: 1px;" /><button
+				style="border-radius: 50px; color:#fff">ส่ง</button>
+		</form>
+	</div>
+	<div id="animation-case">
+		<ul>
+			<li><a href="#"><img></img></li>
+			<li><a href="#"><img></img></li>
+			<li><a href="#"><img></img></li>
+		</ul>
+	</div>
+
+
+
+
+	<!-- <button id="animation-btn"><i class="fas fa-child"></i></button> -->
+
+
+	<div class="btn-map" id="btn-map"
+		style="position: fixed;background: none; border: none; width: 180px; bottom: 100px; right: 468px;">
+		<button id="map01" style="background: none;border: none;width: 180px;bottom: 121px;right: 637px;"><img
+				src="assets/image/04_Ayutthaya.png" alt="" class="w-100"></button>
+
+
+		<button id="map02" style="bottom: 0px;position: fixed;background: none;border: none;width: 290px;
+			right: 176px;"><img src="assets/image/button-0.png" alt="" class="w-100"></button>
+		<button id="map03"
+			style="background: none;border: none;position: fixed;width: 180px;bottom: 100px;right: 0px;"><img
+				src="assets/image/02_2548.png" alt="" class="w-100"></button>
+	</div>
+
+
+    <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius: 20px; background-color: #8b0a02;">
+                <div class="modal-body">
+                    <div class="img" style="border-radius: 20px;">
+                        <img src="assets/image/infor01.jpg" alt="" class="w-100"
+                            style="border-radius: 20px;">
+                    </div>
+                    <div class="detail mt-3" style="color:#fff">
+                        <p>กองกระเบื้องมุงหลังคาชนิดเกล็ดเต่าที่พบ แตกกระจายทั่วบริเวณ บางส่วนมีลักษณะการตกแล้วเป็นแผ่นเรียงซ้อนกันเป็นแนว</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button id="modalbt01" type="button" class="btn btn-primary d-none" data-bs-toggle="myModal"
+        data-bs-target="#exampleModal">
+    </button>
+
+	<script defer src="https://use.fontawesome.com/releases/v5.0.13/js/all.js"
+		integrity="sha384-xymdQtn1n3lH2wcu0qhcdaOpQwyoarkgLVxC/wZ5q7h9gHtxICrpcaSUfygqZGOe"
+		crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/92/three.min.js"></script>
+	<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+		integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+		crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+		integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+		crossorigin="anonymous"></script>
+	<script src="libs/inflate.min.js"></script>
+	<script src="libs/FBXLoader.js"></script>
+	<script src="libs/GLTFLoader.js"></script>
+	<!-- <script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/loaders/GLTFLoader.js"></script> -->
+	<script src="libs/stats.min.js"></script>
+	<script src="libs/Detector.js"></script>
+	<script src="libs/toon3d.js"></script>
+	<script src="libs/OrbitControls.js"></script>
+	<script src="game.js"></script>
+	<script>
+		var game;
+		document.addEventListener("DOMContentLoaded", function () { game = new Game(); });
+	</script>
+
+</body>
+
+</html>
