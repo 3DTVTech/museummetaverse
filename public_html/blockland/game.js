@@ -14,7 +14,10 @@ class Game {
     this.mode = this.modes.NONE;
     this.container;
     this.player;
-    this.npc = {};
+    this.npc_01 = {};
+    this.npc_02 = {};
+    this.old_lady;
+    this.women_anim;
     this.cameras;
     this.camera;
     this.controls;
@@ -74,13 +77,12 @@ class Game {
 
     this.mode = this.modes.PRELOAD;
 
-    document.getElementById("controler-player").onclick = function () {
-      game.profile();
-    };
-
     $("#map02").click(function () {
+      // ปัจจุบัน
       let map2 = game.envmap02;
       let map3 = game.envmap03;
+      let old_lady = game.Old_lady;
+      let women_anim = game.Women_anim;
       let removeMap = game.scene.children.find(
         (item) => item.uuid == map2.uuid
       );
@@ -99,11 +101,25 @@ class Game {
         }
       }
 
+      removeMap = game.scene.children.find(
+        (item) => item.uuid == women_anim.uuid
+      );
+      if (removeMap != undefined) {
+        let index = game.scene.children.indexOf(removeMap);
+        if (index != -1) {
+          game.scene.remove(women_anim);
+        }
+      }
+
       game.scene.add(game.envmap01);
+      game.scene.add(old_lady);
     });
     $("#map01").click(function () {
+      // อยุธยา
       let map1 = game.envmap01;
       let map3 = game.envmap03;
+      let old_lady = game.Old_lady;
+      let women_anim = game.Women_anim;
       let removeMap = game.scene.children.find(
         (item) => item.uuid == map1.uuid
       );
@@ -120,13 +136,26 @@ class Game {
           game.scene.remove(map3);
         }
       }
+      removeMap = game.scene.children.find(
+        (item) => item.uuid == old_lady.uuid
+      );
+      if (removeMap != undefined) {
+        let index = game.scene.children.indexOf(removeMap);
+        if (index != -1) {
+          game.scene.remove(old_lady);
+        }
+      }
 
       game.scene.add(game.envmap02);
+      game.scene.add(women_anim);
     });
 
     $("#map03").click(function () {
+      // 2548
       let map1 = game.envmap01;
       let map2 = game.envmap02;
+      let old_lady = game.Old_lady;
+      let women_anim = game.Women_anim;
       let removeMap = game.scene.children.find(
         (item) => item.uuid == map1.uuid
       );
@@ -143,8 +172,18 @@ class Game {
           game.scene.remove(map2);
         }
       }
+      removeMap = game.scene.children.find(
+        (item) => item.uuid == old_lady.uuid
+      );
+      if (removeMap != undefined) {
+        let index = game.scene.children.indexOf(removeMap);
+        if (index != -1) {
+          game.scene.remove(old_lady);
+        }
+      }
 
       game.scene.add(game.envmap03);
+      game.scene.add(women_anim);
     });
 
     this.clock = new THREE.Clock();
@@ -156,37 +195,16 @@ class Game {
     };
   }
 
-  onChangeMap() {}
-  // animation() {
-  //   const animation = document.getElementById("animation-case");
-  //   const open = animation.style.opacity > 0;
-
-  //   if (open) {
-  //     animation.style.opacity = "0";
-  //   } else {
-  //     animation.style.opacity = "1";
-  //   }
-  // }
-  // profile() {
-  //   const animation = document.getElementById("profile-user");
-  //   const open = animation.style.opacity > 0;
-
-  //   if (open) {
-  // 	animation.style.opacity = "0";
-  //   } else {
-  // 	animation.style.opacity = "1";
-  //   }
-  // }
-    set activeCamera(object) {
-      this.cameras.active = object;
-    }
+  set activeCamera(object) {
+    this.cameras.active = object;
+  }
 
   init() {
     this.mode = this.modes.INITIALISING;
     this.camera = new THREE.PerspectiveCamera(
       45,
       window.innerWidth / window.innerHeight,
-      400,
+      10,
       200000
     );
 
@@ -194,25 +212,27 @@ class Game {
     // this.camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 10, 200000 );
 
     this.scene = new THREE.Scene();
-    let light = new THREE.AmbientLight(0x999999, 1);
-    this.scene.add(light);
-    light = new THREE.HemisphereLight(0xffffbb, 0x080820, 0.8);
+    let lightAm = new THREE.AmbientLight(0x404040,3.5);
+    this.scene.add(lightAm);
 
-    const shadowSize = 7000;
-    light = new THREE.DirectionalLight(0xffffff, 1.2);
+    let lightHem = new THREE.HemisphereLight(0xffffbb, 0x080820, 0.8);
+    let lightHemhlp = new THREE.HemisphereLightHelper(lightHem, 0.8);
+    let lightdi = new THREE.DirectionalLight(0xffffff, 2);
 
-    light.position.set(0, 5000, 2000);
-    light.target.position.set(0, 0, 0);
+    this.scene.add(lightHemhlp);
 
-    light.castShadow = true;
-    light.shadow.camera.far = 6000;
-    light.shadow.camera.top = 4000;
-    light.shadow.camera.bottom = -10000;
-    light.shadow.camera.left = -shadowSize;
-    light.shadow.camera.right = 7000;
-    light.shadow.mapSize.width = 10000;
-    light.shadow.mapSize.height = 10000;
-    this.scene.add(light);
+    lightdi.position.set(0, 5000, 2000);
+    lightdi.target.position.set(0, 0, 0);
+
+    lightdi.castShadow = true;
+    lightdi.shadow.camera.far = 6000;
+    lightdi.shadow.camera.top = 4000;
+    lightdi.shadow.camera.bottom = -10000;
+    lightdi.shadow.camera.left = -7000;
+    lightdi.shadow.camera.right = 7000;
+    lightdi.shadow.mapSize.width = 10000;
+    lightdi.shadow.mapSize.height = 10000;
+    this.scene.add(lightdi);
 
     // const lightCameraHelper = new THREE.CameraHelper(light.shadow.camera);
     // lightCameraHelper.visible = true;
@@ -233,8 +253,6 @@ class Game {
     this.npc02(GLBloader);
     this.information01();
 
-    // this.testTNS(GLBloader);
-
     this.speechBubble = new SpeechBubble(this, "", 150);
     this.speechBubble.mesh.position.set(0, 350, 0);
     // this.speechBubble = new SpeechBubble(this, "", 150);
@@ -251,12 +269,12 @@ class Game {
     this.renderer.shadowMap.enabled = true;
     this.container.appendChild(this.renderer.domElement);
 
-    // this.controls = new THREE.OrbitControls(
-    //   this.camera,
-    //   this.renderer.domElement
-    // );
-    // this.controls.target.set(0, 150, 0);
-    // this.controls.update();
+    this.controls = new THREE.OrbitControls(
+      // this.camera,
+      // this.renderer.domElement
+    );
+    this.controls.target.set(0, 150, 0);
+    this.controls.update();
 
     if ("ontouchstart" in window) {
       window.addEventListener(
@@ -312,76 +330,24 @@ class Game {
       console.log(raycaster);
 
       if (game.informatiionsAll != undefined) {
-        const intersectinfor = raycaster.intersectObjects(game.informatiionsAll);
+        const intersectinfor = raycaster.intersectObjects(
+          game.informatiionsAll
+        );
         console.log(intersectinfor);
 
         if (intersectinfor.length > 0) {
           if (intersectinfor[0].object.name.toLowerCase().includes("info01")) {
             console.log("information");
             console.log(intersectinfor);
-            // modal.style.display = "block";
-            // $("#modalbt01").click(function () {
-            //     $("#myModal").modal();
-            // });
-            // $("#modalbt01").click();
             $("#myModal").modal("show");
             return;
           }
         }
-      }else{
-        console.log("information not found.")
+      } else {
+        console.log("information not found.");
       }
-
-      //   if (informatiionsAll != undefined) {
-      //     const intersectinfor = raycaster.intersectObjects(informatiionsAll);
-      //     console.log(informatiionsAll);
-
-      //     if (intersectinfor.length > 0 && intersectinfor[0].distance <= 25) {
-      //       if (intersectinfor[0].object.name.toLowerCase().includes("info01")) {
-      //         console.log("information");
-      //         console.log(intersectinfor);
-      //         // modal.style.display = "block";
-      //         // $("#modalbt01").click(function () {
-      //         //     $("#myModal").modal();
-      //         // });
-      //         // $("#modalbt01").click();
-      //         $("#myModal").modal("show");
-      //         return;
-      //       }
-      //     }
-      //   }
     }
   }
-
-  // testTNS(GLBloader) {
-  //   const game = this;
-
-  //   let colliders = [];
-
-  //   GLBloader.load(
-  //     `${this.assetsPath}fbx/MuseumSiam06_2548.glb`,
-  //     function (gltf) {
-  //       let map = gltf.scene;
-  //       game.scene.add(map);
-  //       map.position.set(-100, 10, 7000);
-  //       map.scale.set(80, 80, 80);
-
-  //       map.traverse(function (gltf) {
-  //         if (gltf.isMesh) console.log(gltf.name);
-  //         {
-  //           if (gltf.name.startsWith("proxy")) {
-  //             colliders.push(gltf);
-  //             gltf.material.visible = false;
-  //             gltf.material.wireframe = false;
-  //           } else {
-  //             gltf.castShadow = true;
-  //             gltf.receiveShadow = true;
-  //           }
-  //         }
-  //       });
-  //     }
-  //   );
-  // }
 
   loadEnvironment(loader, GLBloader) {
     const game = this;
@@ -488,9 +454,12 @@ class Game {
   npc01(loader) {
     const game = this;
     loader.load(`${this.assetsPath}fbx/people/Old_Lady.fbx`, function (object) {
+      game.Old_lady = object;
+      console.log(game.Old_lady);
       object.mixer = new THREE.AnimationMixer(object);
-      game.npc.mixer = object.mixer;
-      game.npc.root = object.mixer.getRoot();
+
+      game.npc_01.mixer = object.mixer;
+      game.npc_01.root = object.mixer.getRoot();
 
       object.name = "Old_Lady";
 
@@ -502,8 +471,8 @@ class Game {
       });
 
       game.scene.add(object);
-      game.npc.object = object;
-      game.npc.mixer.clipAction(object.animations[0]).play();
+      game.npc_01.object = object;
+      game.npc_01.mixer.clipAction(object.animations[0]).play();
       game.animate();
 
       object.position.set(-100, 10, 7000);
@@ -519,16 +488,31 @@ class Game {
     GLBloader.load(
       `${this.assetsPath}fbx/people/Women_anim.glb`,
       function (gltf) {
-        let npc02 = gltf.scene;
-        game.scene.add(npc02);
-        npc02.traverse(function (child) {
+        let object = gltf.scene;
+        console.log(gltf);
+        game.Women_anim = object;
+        object.mixer = new THREE.AnimationMixer(object);
+
+        object.name = "Women_anim";
+        game.npc_02.object = object;
+
+        game.scene.add(object);
+
+        object.traverse(function (child) {
           if (child.isMesh) {
             child.castShadow = true;
-            child.receiveShadow = false;
+            child.receiveShadow = true;
           }
         });
-        npc02.position.set(1000, 10, 7000);
-        npc02.scale.set(150, 150, 150);
+
+        if (gltf.animations.length > 0) {
+          game.npc_02.mixer = object.mixer;
+          game.npc_02.root = object.mixer.getRoot();
+          game.npc_02.mixer.clipAction(gltf.animations[2]).play();
+        }
+
+        object.position.set(1000, 10, 7000);
+        object.scale.set(150, 150, 150);
       }
     );
   }
@@ -541,9 +525,9 @@ class Game {
     const material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
     const sphere = new THREE.Mesh(geometry, material);
     sphere.position.set(1500, 100, 7000);
-    sphere.name = "info01"
+    sphere.name = "info01";
     game.scene.add(sphere);
-    
+
     game.informatiionsAll.push(sphere);
     console.log(game.informatiionsAll);
     const loader = new THREE.TextureLoader();
@@ -812,7 +796,8 @@ class Game {
       }
       this.camera.lookAt(pos);
     }
-    if (this.npc.mixer !== undefined) this.npc.mixer.update(dt);
+    if (this.npc_01.mixer !== undefined) this.npc_01.mixer.update(dt);
+    if (this.npc_02.mixer !== undefined) this.npc_02.mixer.update(dt);
 
     if (this.sun !== undefined) {
       this.sun.position.copy(this.camera.position);
