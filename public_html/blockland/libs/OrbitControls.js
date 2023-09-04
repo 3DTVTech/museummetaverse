@@ -79,8 +79,8 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 	// for reset
 	this.target0 = this.target.clone();
-	this.position0 = this.object.position.clone();
-	this.zoom0 = this.object.zoom;
+	// this.position0 = this.object.position.clone();
+	// this.zoom0 = this.object.zoom;
 
 	//
 	// public methods
@@ -127,20 +127,20 @@ THREE.OrbitControls = function ( object, domElement ) {
 		var offset = new THREE.Vector3();
 
 		// so camera.up is the orbit axis
-		var quat = new THREE.Quaternion().setFromUnitVectors( object.up, new THREE.Vector3( 0, 1, 0 ) );
-		var quatInverse = quat.clone().inverse();
+		// var quat = new THREE.Quaternion().setFromUnitVectors( object.up, new THREE.Vector3( 0, 1, 0 ) );
+		// var quatInverse = quat.clone().inverse();
 
 		var lastPosition = new THREE.Vector3();
 		var lastQuaternion = new THREE.Quaternion();
 
 		return function update() {
 
-			var position = scope.object.position;
+			// var position = scope.object.position;
 
-			offset.copy( position ).sub( scope.target );
+			// offset.copy( position ).sub( scope.target );
 
 			// rotate offset to "y-axis-is-up" space
-			offset.applyQuaternion( quat );
+			// offset.applyQuaternion( quat );
 
 			// angle from z-axis around y-axis
 			spherical.setFromVector3( offset );
@@ -176,7 +176,7 @@ THREE.OrbitControls = function ( object, domElement ) {
 			// rotate offset back to "camera-up-vector-is-up" space
 			offset.applyQuaternion( quatInverse );
 
-			position.copy( scope.target ).add( offset );
+			// position.copy( scope.target ).add( offset );
 
 			scope.object.lookAt( scope.target );
 

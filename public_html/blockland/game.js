@@ -73,7 +73,7 @@ class Game {
     this.anims.forEach(function (anim) {
       options.assets.push(`${game.assetsPath}fbx/anims/${anim}.fbx`);
     });
-    options.assets.push(`${game.assetsPath}fbx/Map_SSS_02.fbx`);
+    // options.assets.push(`${game.assetsPath}fbx/Map_SSS_02.fbx`);
 
     this.mode = this.modes.PRELOAD;
 
@@ -212,12 +212,12 @@ class Game {
     // this.camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 10, 200000 );
 
     this.scene = new THREE.Scene();
-    let lightAm = new THREE.AmbientLight(0x404040,3.5);
+    let lightAm = new THREE.AmbientLight(0x404040, 3);
     this.scene.add(lightAm);
 
     let lightHem = new THREE.HemisphereLight(0xffffbb, 0x080820, 0.8);
     let lightHemhlp = new THREE.HemisphereLightHelper(lightHem, 0.8);
-    let lightdi = new THREE.DirectionalLight(0xffffff, 2);
+    let lightdi = new THREE.DirectionalLight(0xffffff, 1);
 
     this.scene.add(lightHemhlp);
 
@@ -269,12 +269,11 @@ class Game {
     this.renderer.shadowMap.enabled = true;
     this.container.appendChild(this.renderer.domElement);
 
-    this.controls = new THREE.OrbitControls(
-      // this.camera,
-      // this.renderer.domElement
-    );
-    this.controls.target.set(0, 150, 0);
-    this.controls.update();
+    // this.controls = new THREE.OrbitControls();
+    // // this.camera,
+    // // this.renderer.domElement
+    // this.controls.target.set(0, 150, 0);
+    // this.controls.update();
 
     if ("ontouchstart" in window) {
       window.addEventListener(
@@ -354,54 +353,17 @@ class Game {
 
     var colliders = [];
 
-    GLBloader.load(
-      `${this.assetsPath}fbx/MuseumSiam07_current.glb`,
-      function (gltf) {
-        let map = gltf.scene;
-        game.envmap01 = map;
-        game.scene.add(map);
-        map.position.set(-100, -35, 5000);
-        map.scale.set(80, 80, 80);
-
-        map.traverse(function (gltf) {
-          if (gltf.isMesh) {
-            if (gltf.name.startsWith("proxy")) {
-              console.log(gltf);
-              colliders.push(gltf);
-              gltf.material.visible = false;
-              gltf.material.wireframe = false;
-            } else {
-              gltf.castShadow = true;
-              gltf.receiveShadow = true;
-            }
-          }
-        });
-
-        const tloader = new THREE.CubeTextureLoader();
-        tloader.setPath(`${game.assetsPath}/images/`);
-
-        var textureCube = tloader.load([
-          "px.png",
-          "nx.png",
-          "py.png",
-          "ny.png",
-          "pz.png",
-          "nz.png",
-        ]);
-
-        game.scene.background = textureCube;
-      }
-    );
-
-    GLBloader.load(`${this.assetsPath}fbx/Fort.glb`, function (gltf) {
+    GLBloader.load(`${this.assetsPath}fbx/Plan_test03.glb`, function (gltf) {
       let map = gltf.scene;
-      game.envmap02 = map;
-      map.position.set(-100, -35, 5000);
-      map.scale.set(80, 80, 80);
+      game.envmap01 = map;
+      game.scene.add(map);
+      map.position.set(500, 10, 7000);
+      map.scale.set(300, 300, 300);
 
       map.traverse(function (gltf) {
         if (gltf.isMesh) {
           if (gltf.name.startsWith("proxy")) {
+            console.log(gltf);
             colliders.push(gltf);
             gltf.material.visible = false;
             gltf.material.wireframe = false;
@@ -411,29 +373,63 @@ class Game {
           }
         }
       });
-    });
-    GLBloader.load(
-      `${this.assetsPath}fbx/MuseumSiam06_2548.glb`,
-      function (gltf) {
-        let map = gltf.scene;
-        game.envmap03 = map;
-        map.position.set(-100, -35, 5000);
-        map.scale.set(80, 80, 80);
 
-        map.traverse(function (gltf) {
-          if (gltf.isMesh) {
-            if (gltf.name.startsWith("proxy")) {
-              colliders.push(gltf);
-              gltf.material.visible = false;
-              gltf.material.wireframe = false;
-            } else {
-              gltf.castShadow = true;
-              gltf.receiveShadow = true;
-            }
-          }
-        });
-      }
-    );
+      const tloader = new THREE.CubeTextureLoader();
+      tloader.setPath(`${game.assetsPath}/images/`);
+
+      var textureCube = tloader.load([
+        "px.png",
+        "nx.png",
+        "py.png",
+        "ny.png",
+        "pz.png",
+        "nz.png",
+      ]);
+
+      game.scene.background = textureCube;
+    });
+
+    // GLBloader.load(`${this.assetsPath}fbx/Fort.glb`, function (gltf) {
+    //   let map = gltf.scene;
+    //   game.envmap02 = map;
+    //   map.position.set(-100, -35, 5000);
+    //   map.scale.set(80, 80, 80);
+
+    //   map.traverse(function (gltf) {
+    //     if (gltf.isMesh) {
+    //       if (gltf.name.startsWith("proxy")) {
+    //         colliders.push(gltf);
+    //         gltf.material.visible = false;
+    //         gltf.material.wireframe = false;
+    //       } else {
+    //         gltf.castShadow = true;
+    //         gltf.receiveShadow = true;
+    //       }
+    //     }
+    //   });
+    // });
+    // GLBloader.load(
+    //   `${this.assetsPath}fbx/MuseumSiam06_2548.glb`,
+    //   function (gltf) {
+    //     let map = gltf.scene;
+    //     game.envmap03 = map;
+    //     map.position.set(-100, -35, 5000);
+    //     map.scale.set(80, 80, 80);
+
+    //     map.traverse(function (gltf) {
+    //       if (gltf.isMesh) {
+    //         if (gltf.name.startsWith("proxy")) {
+    //           colliders.push(gltf);
+    //           gltf.material.visible = false;
+    //           gltf.material.wireframe = false;
+    //         } else {
+    //           gltf.castShadow = true;
+    //           gltf.receiveShadow = true;
+    //         }
+    //       }
+    //     });
+    //   }
+    // );
   }
 
   loadNextAnim(loader) {
@@ -487,6 +483,7 @@ class Game {
 
     GLBloader.load(
       `${this.assetsPath}fbx/people/Women_anim.glb`,
+      // `${this.assetsPath}fbx/people/Women_anim.glb`,
       function (gltf) {
         let object = gltf.scene;
         console.log(gltf);
@@ -511,8 +508,11 @@ class Game {
           game.npc_02.mixer.clipAction(gltf.animations[2]).play();
         }
 
-        object.position.set(1000, 10, 7000);
-        object.scale.set(150, 150, 150);
+        object.position.set(-100, 10, 7000);
+        object.scale.set(4.3, 4.3, 4.3);
+
+        // object.position.set(1000, 10, 7000);
+        // object.scale.set(150, 150, 150);
       }
     );
   }
